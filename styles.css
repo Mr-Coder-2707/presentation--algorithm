@@ -1,0 +1,389 @@
+:root {
+    --bg-dark: #0f172a; /* Slate 900 */
+    --accent-gold: #fbbf24; /* Amber 400 */
+    --accent-blue: #38bdf8; /* Sky 400 */
+    --text-light: #f1f5f9;
+}
+
+body {
+    font-family: 'Outfit', sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-light);
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+.font-mono {
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* Canvas Container */
+#canvas-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: all; /* Allow mouse interaction */
+}
+
+/* Slide Container */
+#presentation-container {
+    position: relative;
+    z-index: 10;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none; /* Let clicks pass through to controls */
+}
+
+.slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    pointer-events: none;
+    transition: opacity 0.6s ease, visibility 0.6s ease, transform 0.6s ease;
+    transform: scale(0.95);
+    z-index: 1;
+}
+
+.slide.active {
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transform: scale(1) !important;
+    z-index: 10 !important;
+}
+
+/* Glassmorphism Cards */
+.glass-card {
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+}
+
+.glass-panel {
+    background: rgba(30, 41, 59, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Navigation Controls */
+.controls {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 50;
+    display: flex;
+    gap: 1rem;
+    pointer-events: auto;
+}
+
+.nav-btn {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+    background: var(--accent-gold);
+    color: black;
+    transform: scale(1.1);
+}
+
+/* Progress Bar */
+.progress-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    background: var(--accent-blue);
+    z-index: 50;
+    transition: width 0.5s ease;
+}
+
+/* Custom Scrollbar for code blocks */
+.custom-scroll::-webkit-scrollbar {
+    width: 8px;
+}
+.custom-scroll::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.2);
+}
+.custom-scroll::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.2);
+    border-radius: 4px;
+}
+
+/* Utilities */
+.text-gold { color: var(--accent-gold); }
+.text-blue { color: var(--accent-blue); }
+.border-gold { border-color: var(--accent-gold); }
+
+.glow-text {
+    text-shadow: 0 0 20px rgba(56, 189, 248, 0.5);
+}
+
+/* Footer Slide Counter */
+.slide-footer {
+    position: fixed;
+    bottom: 2rem;
+    left: 2rem;
+    z-index: 50;
+    font-family: 'JetBrains Mono', monospace;
+    color: rgba(241, 245, 249, 0.6);
+    background: rgba(15, 23, 42, 0.6);
+    padding: 0.5rem 1.25rem;
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    font-size: 0.875rem;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Start Presentation Overlay */
+.start-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(10px);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+    cursor: pointer;
+}
+
+.start-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.start-btn {
+    padding: 1.5rem 3rem;
+    background: linear-gradient(135deg, var(--accent-gold), var(--accent-blue));
+    border: none;
+    border-radius: 1rem;
+    color: black;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 40px rgba(251, 191, 36, 0.3);
+}
+
+.start-btn:hover {
+    transform: scale(1.05) translateY(-2px);
+    box-shadow: 0 15px 50px rgba(251, 191, 36, 0.5);
+}
+
+.start-hint {
+    margin-top: 2rem;
+    color: rgba(241, 245, 249, 0.6);
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Slide Navigator */
+.slide-navigator {
+    position: fixed;
+    left: 0;
+    bottom: -200px;
+    width: 100%;
+    height: 180px;
+    background: rgba(15, 23, 42, 0.98);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 100;
+    transition: bottom 0.3s ease;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 1rem;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.slide-navigator.open {
+    bottom: 0;
+}
+
+.slide-navigator::-webkit-scrollbar {
+    height: 8px;
+}
+
+.slide-navigator::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.2);
+}
+
+.slide-navigator::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.2);
+    border-radius: 4px;
+}
+
+.slide-navigator::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-gold);
+}
+
+.nav-header {
+    display: none;
+}
+
+.close-nav {
+    display: none;
+}
+
+.slide-thumb {
+    flex-shrink: 0;
+    width: 200px;
+    height: 140px;
+    background: rgba(30, 41, 59, 0.6);
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.slide-thumb:hover {
+    border-color: var(--accent-gold);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(251, 191, 36, 0.4);
+}
+
+.slide-thumb.active {
+    border-color: var(--accent-blue);
+    border-width: 4px;
+    box-shadow: 0 0 25px rgba(56, 189, 248, 0.6);
+    transform: scale(1.05);
+}
+
+.slide-thumb-preview {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.9));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.slide-thumb-preview canvas {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.8;
+}
+
+.slide-thumb-preview .preview-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: rgba(255, 255, 255, 0.2);
+    pointer-events: none;
+}
+
+.slide-thumb-content {
+    display: none;
+}
+
+.slide-thumb-header {
+    display: none;
+}
+
+.slide-thumb-number {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    width: 28px;
+    height: 28px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    border-radius: 4px;
+    text-align: center;
+    line-height: 28px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    z-index: 10;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.slide-thumb.active .slide-thumb-number {
+    background: var(--accent-blue);
+    border-color: var(--accent-blue);
+    color: white;
+}
+
+.slide-thumb-desc {
+    display: none;
+}
+
+/* Toggle Navigator Button */
+.nav-toggle {
+    position: fixed;
+    left: 50%;
+    bottom: 1rem;
+    transform: translateX(-50%);
+    width: auto;
+    padding: 0.75rem 1.5rem;
+    border-radius: 2rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 50;
+    font-size: 0.875rem;
+}
+
+.nav-toggle:hover {
+    background: var(--accent-gold);
+    color: black;
+    transform: translateX(-50%) scale(1.05);
+}
+
+.slide-navigator.open ~ .nav-toggle {
+    bottom: 195px;
+}

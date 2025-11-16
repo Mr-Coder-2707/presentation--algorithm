@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StoneSort - Visual Sorting Lab Presentation</title>
+    
+    <!-- Meta Tags -->
+    <meta name="description" content="StoneSort - An interactive 3D visualization tool for sorting algorithms. Educational platform for learning Bubble Sort, Quick Sort, Merge Sort, and more with real-time Python code execution.">
+    <meta name="keywords" content="sorting algorithms, visualization, 3D animation, education, Python, algorithms, bubble sort, quick sort, merge sort, heap sort">
+    <meta name="author" content="Mahmoud Sabry El-khwass">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="English">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://stonesort.com/">
+    <meta property="og:title" content="StoneSort - Visual Sorting Lab & Algorithm Studio">
+    <meta property="og:description" content="Interactive 3D visualization tool for learning sorting algorithms with real-time Python code execution and immersive animations.">
+    <meta property="og:image" content="https://stonesort.com/preview.jpg">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://stonesort.com/">
+    <meta property="twitter:title" content="StoneSort - Visual Sorting Lab">
+    <meta property="twitter:description" content="Learn sorting algorithms through interactive 3D visualization and real-time Python code execution.">
+    <meta property="twitter:image" content="https://stonesort.com/preview.jpg">
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="msapplication-TileColor" content="#1a1a2e">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' style='stop-color:%234facfe'/><stop offset='100%25' style='stop-color:%2300f2fe'/></linearGradient></defs><rect x='10' y='10' width='25' height='80' rx='3' fill='url(%23grad)'/><rect x='40' y='30' width='25' height='60' rx='3' fill='url(%23grad)'/><rect x='70' y='20' width='25' height='70' rx='3' fill='url(%23grad)'/></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' style='stop-color:%234facfe'/><stop offset='100%25' style='stop-color:%2300f2fe'/></linearGradient></defs><rect x='10' y='10' width='25' height='80' rx='3' fill='url(%23grad)'/><rect x='40' y='30' width='25' height='60' rx='3' fill='url(%23grad)'/><rect x='70' y='20' width='25' height='70' rx='3' fill='url(%23grad)'/></svg>">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- GSAP & Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <!-- html2canvas for slide previews -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- 3D Background -->
+    <div id="canvas-container"></div>
+
+    <!-- Slide Navigator -->
+    <div class="slide-navigator" id="slide-navigator">
+        <div id="slide-list">
+            <!-- Slides will be populated by JS -->
+        </div>
+    </div>
+
+    <!-- Toggle Navigator Button -->
+    <button class="nav-toggle" onclick="toggleNavigator()" title="Show All Slides" type="button">
+        <i class="fas fa-th"></i>
+        <span>Show Slides</span>
+    </button>
+
+    <!-- Start Presentation Overlay -->
+    <div class="start-overlay" id="start-overlay">
+        <div class="text-center">
+            <h2 class="text-5xl font-bold mb-4 glow-text">Stone<span class="text-gold">Sort</span></h2>
+            <p class="text-xl text-gray-400 mb-8">Visual Sorting Lab Presentation</p>
+            <button class="start-btn" onclick="startPresentation()">
+                <i class="fas fa-play mr-3"></i>
+                Start Presentation
+            </button>
+            <div class="start-hint">
+                <i class="fas fa-info-circle"></i>
+                <span>Use arrow keys or buttons to navigate</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
+
+    <!-- Footer / Slide Counter -->
+    <div class="slide-footer">
+        <i class="fas fa-layer-group text-gold"></i>
+        <span id="slide-counter-text">1 / 8</span>
+    </div>
+
+    <!-- Navigation Controls -->
+    <div class="controls">
+        <button class="nav-btn" onclick="changeSlide(-1)" title="Previous">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <button class="nav-btn" onclick="toggleFullScreen()" title="Full Screen">
+            <i class="fas fa-expand" id="fs-icon"></i>
+        </button>
+        <button class="nav-btn" onclick="changeSlide(1)" title="Next">
+            <i class="fas fa-arrow-right"></i>
+        </button>
+    </div>
+
+    <!-- Slides Container -->
+    <div id="presentation-container">
+
+        <!-- SLIDE 1: Title -->
+        <section class="slide active" id="slide-0">
+            <div class="text-center z-10">
+                <div class="inline-block px-4 py-1 mb-4 rounded-full glass-panel text-blue text-sm font-mono uppercase tracking-widest element-anim">
+                    Algorithms Analysis Course
+                </div>
+                <h1 class="text-6xl md:text-8xl font-bold mb-4 glow-text element-anim">
+                    Stone<span class="text-gold">Sort</span>
+                </h1>
+                <p class="text-2xl md:text-3xl font-light mb-8 text-gray-300 element-anim">
+                    Visual Sorting Lab & Algorithm Studio
+                </p>
+                <div class="flex justify-center gap-4 mb-8 element-anim">
+                    <div class="glass-card px-6 py-3 flex items-center gap-3">
+                        <i class="fas fa-user text-gold"></i>
+                        <span>Mahmoud Sabry El-khwass</span>
+                    </div>
+                    <div class="glass-card px-6 py-3 flex items-center gap-3">
+                        <i class="fas fa-code text-blue"></i>
+                        <span>Mr-Coder-2707</span>
+                    </div>
+                </div>
+                <div class="glass-card inline-block px-8 py-6 element-anim">
+                    <div class="flex flex-col gap-3 text-left">
+                        <div class="flex items-center gap-3 border-b border-gray-700 pb-2">
+                            <i class="fas fa-chalkboard-teacher text-gold"></i>
+                            <div>
+                                <div class="text-xs text-gray-400 uppercase tracking-wider">Supervised By</div>
+                                <div class="font-bold text-lg">Dr. Ayman Mahgoub</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-user-graduate text-blue"></i>
+                            <div>
+                                <div class="text-xs text-gray-400 uppercase tracking-wider">Teaching Assistant</div>
+                                <div class="font-semibold">Nermin Ashraf</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 2: Overview -->
+        <section class="slide" id="slide-1">
+            <div class="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div class="order-2 md:order-1">
+                    <h2 class="text-4xl md:text-5xl font-bold mb-6 element-anim">Overview</h2>
+                    <p class="text-lg text-gray-300 mb-6 leading-relaxed element-anim">
+                        <strong class="text-white">StoneSort</strong> is an interactive educational web application designed to visualize sorting algorithms in a 3D environment.
+                    </p>
+                    <ul class="space-y-4 element-anim">
+                        <li class="flex items-start gap-3">
+                            <div class="bg-blue-500/20 p-2 rounded text-blue"><i class="fas fa-graduation-cap"></i></div>
+                            <div>
+                                <h3 class="font-bold">Educational</h3>
+                                <p class="text-sm text-gray-400">Deep understanding of algorithmic logic.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <div class="bg-yellow-500/20 p-2 rounded text-gold"><i class="fas fa-cube"></i></div>
+                            <div>
+                                <h3 class="font-bold">3D Visualization</h3>
+                                <p class="text-sm text-gray-400">Immersive sorting animations.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <div class="bg-green-500/20 p-2 rounded text-green-400"><i class="fas fa-keyboard"></i></div>
+                            <div>
+                                <h3 class="font-bold">Interactive Editor</h3>
+                                <p class="text-sm text-gray-400">Write and execute Python code in real-time.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="order-1 md:order-2 glass-card p-8 flex flex-col gap-4 element-anim transform rotate-2 hover:rotate-0 transition-transform duration-500">
+                    <div class="flex justify-between items-center border-b border-gray-700 pb-2">
+                        <span class="text-xs font-mono text-gray-400">visualizer.py</span>
+                        <div class="flex gap-1">
+                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                        </div>
+                    </div>
+                    <div class="font-mono text-sm text-gray-300">
+                        <span class="text-purple-400">def</span> <span class="text-blue-400">bubble_sort</span>(arr):<br>
+                        &nbsp;&nbsp;n = <span class="text-yellow-400">len</span>(arr)<br>
+                        &nbsp;&nbsp;<span class="text-purple-400">for</span> i <span class="text-purple-400">in</span> <span class="text-yellow-400">range</span>(n):<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="text-purple-400">for</span> j <span class="text-purple-400">in</span> <span class="text-yellow-400">range</span>(0, n-i-1):<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-gray-500"># Swap if greater</span><br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-purple-400">if</span> arr[j] > arr[j+1]:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;arr[j], arr[j+1] = arr[j+1], arr[j]
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 3: Key Features -->
+        <section class="slide" id="slide-2">
+            <h2 class="text-4xl font-bold mb-10 text-center element-anim">Key Features</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl w-full">
+                
+                <!-- Feature 1 -->
+                <div class="glass-card p-6 hover:bg-white/5 transition duration-300 element-anim">
+                    <div class="text-4xl text-blue mb-4"><i class="fas fa-palette"></i></div>
+                    <h3 class="text-xl font-bold mb-2">22+ Pro Themes</h3>
+                    <p class="text-sm text-gray-400">Includes Dark+, Monokai, Dracula, and more.</p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="glass-card p-6 hover:bg-white/5 transition duration-300 element-anim">
+                    <div class="text-4xl text-gold mb-4"><i class="fas fa-code"></i></div>
+                    <h3 class="text-xl font-bold mb-2">Monaco Editor</h3>
+                    <p class="text-sm text-gray-400">Full VS Code experience with IntelliSense and syntax highlighting.</p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="glass-card p-6 hover:bg-white/5 transition duration-300 element-anim">
+                    <div class="text-4xl text-purple-400 mb-4"><i class="fas fa-cubes"></i></div>
+                    <h3 class="text-xl font-bold mb-2">3D Visualizer</h3>
+                    <p class="text-sm text-gray-400">360° camera control, realistic cube animations, and sound effects.</p>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="glass-card p-6 hover:bg-white/5 transition duration-300 element-anim">
+                    <div class="text-4xl text-green-400 mb-4"><i class="fas fa-language"></i></div>
+                    <h3 class="text-xl font-bold mb-2">Bilingual UI</h3>
+                    <p class="text-sm text-gray-400">Full English & Arabic (RTL) support with tailored explanations.</p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SLIDE 4: Algorithms -->
+        <section class="slide" id="slide-3">
+            <div class="w-full max-w-6xl">
+                <h2 class="text-4xl font-bold mb-8 text-center element-anim">Supported Algorithms</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    
+                    <!-- Bubble Sort -->
+                    <div class="glass-card p-6 element-anim border-l-4 border-blue-500">
+                        <h3 class="text-2xl font-bold mb-2">Bubble Sort</h3>
+                        <div class="flex justify-between text-sm font-mono mb-2">
+                            <span class="text-gray-400">Best: O(n)</span>
+                            <span class="text-red-400">Worst: O(n²)</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">Simple implementation, good for education.</p>
+                    </div>
+
+                    <!-- Quick Sort -->
+                    <div class="glass-card p-6 element-anim border-l-4 border-gold">
+                        <h3 class="text-2xl font-bold mb-2">Quick Sort</h3>
+                        <div class="flex justify-between text-sm font-mono mb-2">
+                            <span class="text-green-400">Avg: O(n log n)</span>
+                            <span class="text-red-400">Worst: O(n²)</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">Fastest in practice, divide & conquer.</p>
+                    </div>
+
+                    <!-- Merge Sort -->
+                    <div class="glass-card p-6 element-anim border-l-4 border-purple-500">
+                        <h3 class="text-2xl font-bold mb-2">Merge Sort</h3>
+                        <div class="flex justify-between text-sm font-mono mb-2">
+                            <span class="text-green-400">All: O(n log n)</span>
+                            <span class="text-yellow-400">Stable</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">Reliable, stable, but uses O(n) space.</p>
+                    </div>
+
+                    <!-- Heap Sort -->
+                    <div class="glass-card p-6 element-anim border-l-4 border-green-500">
+                        <h3 class="text-2xl font-bold mb-2">Heap Sort</h3>
+                        <div class="flex justify-between text-sm font-mono mb-2">
+                            <span class="text-green-400">All: O(n log n)</span>
+                            <span class="text-green-400">Space: O(1)</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">Memory efficient, uses Heap data structure.</p>
+                    </div>
+
+                    <!-- Insertion & Selection -->
+                    <div class="glass-card p-6 element-anim border-l-4 border-gray-500 md:col-span-2 flex flex-col justify-center">
+                        <h3 class="text-2xl font-bold mb-2">Insertion & Selection</h3>
+                        <p class="text-gray-400 text-sm">
+                            <strong>Insertion:</strong> Excellent for small or nearly sorted arrays (Adaptive).<br>
+                            <strong>Selection:</strong> Minimizes memory writes.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 5: Tech Stack -->
+        <section class="slide" id="slide-4">
+            <h2 class="text-4xl font-bold mb-12 text-center element-anim">Technology Stack</h2>
+            
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-8 max-w-4xl w-full">
+                
+                <!-- Tech Item -->
+                <div class="flex flex-col items-center gap-3 element-anim">
+                    <div class="w-20 h-20 rounded-full glass-card flex items-center justify-center text-4xl text-white hover:scale-110 transition">
+                        <i class="fab fa-python"></i>
+                    </div>
+                    <span class="font-bold">Flask (Python)</span>
+                    <span class="text-xs text-gray-400">Backend & Algorithms</span>
+                </div>
+
+                <div class="flex flex-col items-center gap-3 element-anim">
+                    <div class="w-20 h-20 rounded-full glass-card flex items-center justify-center text-4xl text-green-400 hover:scale-110 transition">
+                        <i class="fab fa-vuejs"></i>
+                    </div>
+                    <span class="font-bold">Vue.js 3</span>
+                    <span class="text-xs text-gray-400">Interactive UI</span>
+                </div>
+
+                <div class="flex flex-col items-center gap-3 element-anim">
+                    <div class="w-20 h-20 rounded-full glass-card flex items-center justify-center text-4xl text-white hover:scale-110 transition">
+                        <i class="fas fa-cube"></i>
+                    </div>
+                    <span class="font-bold">Three.js</span>
+                    <span class="text-xs text-gray-400">3D Rendering</span>
+                </div>
+
+                <div class="flex flex-col items-center gap-3 element-anim">
+                    <div class="w-20 h-20 rounded-full glass-card flex items-center justify-center text-4xl text-blue hover:scale-110 transition">
+                        <i class="fas fa-wind"></i>
+                    </div>
+                    <span class="font-bold">Tailwind CSS</span>
+                    <span class="text-xs text-gray-400">Utility-First Styling</span>
+                </div>
+
+                <div class="flex flex-col items-center gap-3 element-anim">
+                    <div class="w-20 h-20 rounded-full glass-card flex items-center justify-center text-4xl text-purple-400 hover:scale-110 transition">
+                        <i class="fas fa-film"></i>
+                    </div>
+                    <span class="font-bold">GSAP</span>
+                    <span class="text-xs text-gray-400">Pro Animations</span>
+                </div>
+
+                 <div class="flex flex-col items-center gap-3 element-anim">
+                    <div class="w-20 h-20 rounded-full glass-card flex items-center justify-center text-4xl text-yellow-500 hover:scale-110 transition">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <span class="font-bold">Security</span>
+                    <span class="text-xs text-gray-400">Sandboxed Execution</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 6: Future Plans -->
+        <section class="slide" id="slide-5">
+            <div class="max-w-5xl w-full flex flex-col items-center">
+                <h2 class="text-4xl font-bold mb-10 element-anim">Future Roadmap</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+                    <!-- Card 1 -->
+                    <div class="glass-card p-6 relative overflow-hidden element-anim group">
+                        <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition">
+                            <i class="fas fa-project-diagram text-8xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 text-blue">Graph Algorithms</h3>
+                        <ul class="text-sm text-gray-300 space-y-2">
+                            <li>• BFS & DFS Visualization</li>
+                            <li>• Dijkstra Pathfinding</li>
+                            <li>• A* Search</li>
+                        </ul>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div class="glass-card p-6 relative overflow-hidden element-anim group">
+                        <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition">
+                            <i class="fas fa-tree text-8xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 text-gold">Tree Structures</h3>
+                        <ul class="text-sm text-gray-300 space-y-2">
+                            <li>• Binary Search Trees</li>
+                            <li>• AVL Trees</li>
+                            <li>• Red-Black Trees</li>
+                        </ul>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div class="glass-card p-6 relative overflow-hidden element-anim group">
+                        <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition">
+                            <i class="fas fa-mobile-alt text-8xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 text-purple-400">Enhancements</h3>
+                        <ul class="text-sm text-gray-300 space-y-2">
+                            <li>• Code Comparison View</li>
+                            <li>• Complexity Calculator</li>
+                            <li>• Mobile-Responsive 3D</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 7: Usage -->
+        <section class="slide" id="slide-6">
+            <div class="max-w-4xl w-full text-center">
+                <h2 class="text-4xl font-bold mb-8 element-anim">Get Started</h2>
+                
+                <div class="glass-card p-8 text-left mb-8 element-anim">
+                    <div class="flex items-center gap-2 mb-4 border-b border-gray-700 pb-2">
+                        <i class="fas fa-terminal text-gray-400"></i>
+                        <span class="font-mono text-sm">Terminal (Windows)</span>
+                    </div>
+                    <code class="font-mono text-green-400 block mb-2">
+                        <span class="text-gray-500"># 1. Automatic Setup</span><br>
+                        .\setup.bat
+                    </code>
+                    <code class="font-mono text-green-400 block mb-2">
+                        <span class="text-gray-500"># 2. Start Server</span><br>
+                        .\start.bat
+                    </code>
+                    <code class="font-mono text-blue block mt-4">
+                        <span class="text-gray-500"># Access via browser:</span><br>
+                        http://localhost:5000
+                    </code>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 element-anim">
+                    <div class="glass-panel p-3 rounded text-center">
+                        <span class="block font-bold text-gold">Space</span>
+                        <span class="text-xs text-gray-400">Play/Pause</span>
+                    </div>
+                    <div class="glass-panel p-3 rounded text-center">
+                        <span class="block font-bold text-gold">R</span>
+                        <span class="text-xs text-gray-400">Reset</span>
+                    </div>
+                    <div class="glass-panel p-3 rounded text-center">
+                        <span class="block font-bold text-gold">→ / ←</span>
+                        <span class="text-xs text-gray-400">Step Fwd/Back</span>
+                    </div>
+                    <div class="glass-panel p-3 rounded text-center">
+                        <span class="block font-bold text-gold">Mouse</span>
+                        <span class="text-xs text-gray-400">360° Orbit</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 8: End -->
+        <section class="slide" id="slide-7">
+            <div class="text-center z-10">
+                <h2 class="text-5xl font-bold mb-8 element-anim">Thank You</h2>
+                <div class="w-24 h-1 bg-gold mx-auto mb-8 element-anim"></div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mb-8">
+                    <div class="glass-card p-6 text-left element-anim">
+                        <h3 class="text-xl font-bold mb-4 text-center text-gold">Student</h3>
+                        <div class="text-center mb-4">
+                            <div class="font-bold text-2xl">Mahmoud Sabry El-khwass</div>
+                            <div class="text-gray-400 text-sm">@Mr-Coder-2707</div>
+                        </div>
+                        <div class="space-y-3">
+                            <a href="https://github.com/Mr-Coder-2707" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 hover:text-gold transition">
+                                <i class="fab fa-github w-6"></i>
+                                <span>@Mr-Coder-2707</span>
+                            </a>
+                            <a href="https://www.linkedin.com/in/mahmoud-sabry-mahmoud-ali-elkhwass-535223285/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 hover:text-blue transition">
+                                <i class="fab fa-linkedin w-6"></i>
+                                <span>Mahmoud Sabry El-khwass</span>
+                            </a>
+                            <a href="https://linkhub-portfolio.netlify.app/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 hover:text-purple-400 transition">
+                                <i class="fas fa-globe w-6"></i>
+                                <span>linkhub-portfolio.netlify.app</span>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="glass-card p-6 text-left element-anim">
+                        <h3 class="text-xl font-bold mb-4 text-center text-blue">Supervision</h3>
+                        <div class="space-y-4">
+                            <div class="border-b border-gray-700 pb-3">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <i class="fas fa-chalkboard-teacher text-gold text-xl"></i>
+                                    <div class="text-xs text-gray-400 uppercase tracking-wider">Supervisor</div>
+                                </div>
+                                <div class="font-bold text-lg">Dr. Ayman Mahgoub</div>
+                            </div>
+                            <div class="pb-3">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <i class="fas fa-user-graduate text-blue text-xl"></i>
+                                    <div class="text-xs text-gray-400 uppercase tracking-wider">Teaching Assistant</div>
+                                </div>
+                                <div class="font-semibold text-lg">Nermin Ashraf</div>
+                            </div>
+                            <div class="pt-2 border-t border-gray-700">
+                                <div class="flex items-center gap-2 text-gray-300">
+                                    <i class="fas fa-book text-purple-400"></i>
+                                    <span class="text-sm">Algorithms Analysis Course</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="mt-8 text-sm text-gray-500 element-anim">
+                    © 2025 StoneSort Project - Algorithms Analysis Course
+                </p>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- External JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
