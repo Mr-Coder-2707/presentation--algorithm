@@ -235,94 +235,6 @@ document.addEventListener('mousemove', (event) => {
     mouseY = (event.clientY - window.innerHeight / 2) * 0.05;
 });
 
-// --- MOBILE PINCH TO ZOOM ---
-let initialScale = 1;
-let currentScale = 1;
-let initialDistance = 0;
-let isPinching = false;
-
-const presentationContainer = document.getElementById('presentation-container');
-
-function getDistance(touches) {
-    const dx = touches[0].clientX - touches[1].clientX;
-    const dy = touches[0].clientY - touches[1].clientY;
-    return Math.sqrt(dx * dx + dy * dy);
-}
-
-function handleTouchStart(event) {
-    if (event.touches.length === 2) {
-        isPinching = true;
-        initialDistance = getDistance(event.touches);
-        initialScale = currentScale;
-        event.preventDefault();
-    }
-}
-
-function handleTouchMove(event) {
-    if (isPinching && event.touches.length === 2) {
-        const currentDistance = getDistance(event.touches);
-        const scaleChange = currentDistance / initialDistance;
-        currentScale = Math.min(Math.max(initialScale * scaleChange, 0.5), 3);
-        
-        // Apply zoom to active slide
-        const activeSlide = document.querySelector('.slide.active');
-        if (activeSlide) {
-            activeSlide.style.transform = `scale(${currentScale})`;
-            activeSlide.style.transition = 'none';
-        }
-        
-        event.preventDefault();
-    }
-}
-
-function handleTouchEnd(event) {
-    if (isPinching) {
-        isPinching = false;
-        
-        // Smooth return to normal if scale is close to 1
-        const activeSlide = document.querySelector('.slide.active');
-        if (activeSlide) {
-            if (currentScale < 0.7) {
-                currentScale = 0.5;
-            } else if (currentScale > 2.5) {
-                currentScale = 3;
-            } else if (currentScale > 0.9 && currentScale < 1.1) {
-                currentScale = 1;
-            }
-            
-            activeSlide.style.transition = 'transform 0.3s ease';
-            activeSlide.style.transform = `scale(${currentScale})`;
-        }
-    }
-}
-
-// Add touch event listeners for mobile devices
-if ('ontouchstart' in window) {
-    presentationContainer.addEventListener('touchstart', handleTouchStart, { passive: false });
-    presentationContainer.addEventListener('touchmove', handleTouchMove, { passive: false });
-    presentationContainer.addEventListener('touchend', handleTouchEnd);
-    
-    // Double tap to reset zoom
-    let lastTap = 0;
-    presentationContainer.addEventListener('touchend', (event) => {
-        const currentTime = new Date().getTime();
-        const tapLength = currentTime - lastTap;
-        
-        if (tapLength < 300 && tapLength > 0) {
-            // Double tap detected
-            currentScale = 1;
-            const activeSlide = document.querySelector('.slide.active');
-            if (activeSlide) {
-                activeSlide.style.transition = 'transform 0.3s ease';
-                activeSlide.style.transform = 'scale(1)';
-            }
-            event.preventDefault();
-        }
-        
-        lastTap = currentTime;
-    });
-}
-
 // --- ANIMATION LOOP ---
 const clock = new THREE.Clock();
 
@@ -473,9 +385,6 @@ function changeSlide(direction) {
     if (nextIndex >= 0 && nextIndex < totalSlides) {
         isAnimating = true;
 
-        // Reset zoom on slide change
-        currentScale = 1;
-
         // Get elements
         const currentEl = document.getElementById(`slide-${currentSlide}`);
         const nextEl = document.getElementById(`slide-${nextIndex}`);
@@ -492,10 +401,8 @@ function changeSlide(direction) {
                 duration: 0.5,
                 onComplete: () => {
                     currentEl.classList.remove('active');
-                    currentEl.style.transform = 'scale(1)'; // Reset zoom
                     currentSlide = nextIndex;
                     nextEl.classList.add('active');
-                    nextEl.style.transform = 'scale(1)'; // Ensure new slide starts at scale 1
                     
                     gsap.set(nextEl, { scale: 1.1, opacity: 0 });
                     gsap.to(nextEl, {
@@ -519,10 +426,8 @@ function changeSlide(direction) {
             // Fallback: CSS-only transition
             console.log('GSAP not loaded, using CSS transitions');
             currentEl.classList.remove('active');
-            currentEl.style.transform = 'scale(1)'; // Reset zoom
             currentSlide = nextIndex;
             nextEl.classList.add('active');
-            nextEl.style.transform = 'scale(1)'; // Ensure new slide starts at scale 1
             
             setTimeout(() => {
                 isAnimating = false;
