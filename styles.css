@@ -36,6 +36,7 @@ body {
     width: 100vw;
     height: 100vh;
     pointer-events: none; /* Let clicks pass through to controls */
+    touch-action: none; /* Enable custom touch handling for pinch zoom */
 }
 
 .slide {
@@ -392,6 +393,8 @@ body {
 @media screen and (max-width: 768px) {
     .slide {
         padding: 1rem;
+        touch-action: pan-x pan-y pinch-zoom; /* Allow zoom gestures on mobile */
+        overflow: visible; /* Allow zoomed content to be visible */
     }
 
     /* Footer positioning for mobile */
@@ -560,6 +563,10 @@ body {
     .start-btn {
         padding: 0.875rem 1.5rem;
         font-size: 1rem;
+    }
+
+    .slide.active {
+        transform-origin: center center; /* Ensure zoom happens from center */
     }
 }
 
