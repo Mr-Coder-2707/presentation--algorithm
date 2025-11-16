@@ -387,3 +387,179 @@ body {
 .slide-navigator.open ~ .nav-toggle {
     bottom: 195px;
 }
+
+/* Mobile Responsive Fixes */
+@media screen and (max-width: 768px) {
+    .slide {
+        padding: 1rem;
+    }
+
+    /* Footer positioning for mobile */
+    .slide-footer {
+        bottom: 1rem;
+        left: 1rem;
+        padding: 0.4rem 1rem;
+        font-size: 0.75rem;
+    }
+
+    /* Navigation controls for mobile */
+    .controls {
+        bottom: 1rem;
+        right: 1rem;
+        gap: 0.5rem;
+        flex-direction: column;
+    }
+
+    .nav-btn {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+
+    /* Navigator toggle button for mobile */
+    .nav-toggle {
+        bottom: 5rem;
+        padding: 0.6rem 1.2rem;
+        font-size: 0.75rem;
+    }
+
+    .slide-navigator.open ~ .nav-toggle {
+        bottom: 195px;
+    }
+
+    /* Slide navigator for mobile */
+    .slide-navigator {
+        height: 150px;
+        padding: 0.75rem;
+        bottom: -180px;
+    }
+
+    .slide-thumb {
+        width: 160px;
+        height: 110px;
+    }
+
+    .slide-thumb-number {
+        width: 24px;
+        height: 24px;
+        line-height: 24px;
+        font-size: 0.75rem;
+    }
+
+    /* Adjust text sizes for mobile */
+    .slide h1 {
+        font-size: 2.5rem !important;
+    }
+
+    .slide h2 {
+        font-size: 1.75rem !important;
+        margin-bottom: 1.5rem;
+    }
+
+    .slide h3 {
+        font-size: 1.25rem !important;
+    }
+
+    .slide p {
+        font-size: 0.875rem !important;
+    }
+
+    /* Glass cards spacing for mobile */
+    .glass-card {
+        padding: 1rem !important;
+    }
+
+    /* Grid adjustments for mobile */
+    .grid {
+        gap: 1rem !important;
+    }
+
+    /* Start overlay for mobile */
+    .start-overlay h2 {
+        font-size: 2.5rem !important;
+    }
+
+    .start-overlay p {
+        font-size: 1rem !important;
+    }
+
+    .start-btn {
+        padding: 1rem 2rem;
+        font-size: 1.125rem;
+    }
+
+    .start-hint {
+        font-size: 0.75rem;
+        padding: 0 1rem;
+        text-align: center;
+    }
+
+    /* Specific slide fixes */
+    .element-anim {
+        margin-bottom: 1rem;
+    }
+
+    /* Slide 1 - Title page */
+    #slide-0 .glass-card {
+        margin-bottom: 1rem;
+        width: 100%;
+    }
+
+    #slide-0 .flex.gap-4 {
+        flex-direction: column;
+        gap: 0.75rem !important;
+    }
+
+    /* Code blocks on mobile */
+    .font-mono {
+        font-size: 0.7rem !important;
+        overflow-x: auto;
+    }
+
+    /* Tech stack icons */
+    .w-20.h-20 {
+        width: 3.5rem !important;
+        height: 3.5rem !important;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .slide {
+        padding: 0.75rem;
+    }
+
+    .slide h1 {
+        font-size: 2rem !important;
+    }
+
+    .slide h2 {
+        font-size: 1.5rem !important;
+    }
+
+    .glass-card {
+        padding: 0.75rem !important;
+    }
+
+    .controls {
+        bottom: 0.75rem;
+        right: 0.75rem;
+    }
+
+    .slide-footer {
+        bottom: 0.75rem;
+        left: 0.75rem;
+        font-size: 0.65rem;
+        padding: 0.3rem 0.75rem;
+    }
+
+    .nav-toggle {
+        bottom: 4.5rem;
+        padding: 0.5rem 1rem;
+        font-size: 0.7rem;
+    }
+
+    .start-btn {
+        padding: 0.875rem 1.5rem;
+        font-size: 1rem;
+    }
+}
+
