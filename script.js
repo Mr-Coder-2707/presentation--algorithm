@@ -444,6 +444,51 @@ function changeSlide(direction) {
     }
 }
 
+// --- TOUCH/SWIPE NAVIGATION FOR MOBILE ---
+let touchStartX = 0;
+let touchStartY = 0;
+let touchEndX = 0;
+let touchEndY = 0;
+
+const minSwipeDistance = 50; // Minimum distance for swipe in pixels
+
+document.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
+}, { passive: true });
+
+document.addEventListener('touchend', (e) => {
+    // Don't navigate if overlay is visible
+    const overlay = document.getElementById('start-overlay');
+    if (overlay && !overlay.classList.contains('hidden')) {
+        return;
+    }
+
+    touchEndX = e.changedTouches[0].screenX;
+    touchEndY = e.changedTouches[0].screenY;
+    
+    handleSwipe();
+}, { passive: true });
+
+function handleSwipe() {
+    const diffX = touchEndX - touchStartX;
+    const diffY = touchEndY - touchStartY;
+    
+    // Check if horizontal swipe is dominant
+    if (Math.abs(diffX) > Math.abs(diffY)) {
+        // Horizontal swipe
+        if (Math.abs(diffX) > minSwipeDistance) {
+            if (diffX > 0) {
+                // Swipe right - go to previous slide
+                changeSlide(-1);
+            } else {
+                // Swipe left - go to next slide
+                changeSlide(1);
+            }
+        }
+    }
+}
+
 // --- KEYBOARD NAVIGATION ---
 document.addEventListener('keydown', (e) => {
     // Don't navigate if overlay is visible
